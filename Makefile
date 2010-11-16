@@ -5,16 +5,12 @@
 
 include $(GOROOT)/src/Make.inc
 
-SRC=cvis.go
+TARG=clusterVis
+GOFILES=watch.go\
+		cvis.go\
+		webserv.go\
 
-all: cvis
-
-cvis: 
-#	$(GC) httppic.go
-	$(GC) cvis.go
-	$(GC) main.go
-	$(LD) -o clusterVis  main.$O
-	rm -f *.$O
+include $(GOROOT)/src/Make.cmd
 
 test: $(TARG)
 	./test.sh

@@ -1,12 +1,10 @@
-
-package cvis
+package main
 
 import (
 	"os";
 	"bytes";
 	"io";
 	"fmt";
-	/*"./pics"*/
 	"template";
 )
 
@@ -24,30 +22,27 @@ func buildTable(w io.Writer, data interface{}, formatter string) {
 		os.Exit(1);
 	}
     fmt.Fprintf(w, "<table height=\"100%%\" width=\"100%%\">\n")
-    for i := 0; i < len(v); i++ {
-        if i%7 == 0 {
-			if i == 0 {
-                fmt.Fprintf(w, "<tr><td width=\"5%%\">0-0:</td>\n")
-            } else {
-				if (i/7)%7 ==0 {
-					fmt.Fprintf(w, "</tr><tr></tr><tr></tr><tr></tr>");
-				} else  {
-					fmt.Fprintf(w, "</tr><tr></tr>");
-				}
-                fmt.Fprintf(w, "<tr><td  width=\"5%%\">%d-%d:</td>\n", (i/49), (i/7)%7)
-            }
-        }
-		fmt.Fprintf(w, "<td border=\"1\">  </td>")
-        if(v[i] == 0xFF) {
-            fmt.Fprintf(w, "<td align=\"center\" bgcolor= #FF0000 border= \"1\"> %d </td>\n", i%7) /* red */
-        } else if  v[i] != 0x00 {
-            fmt.Fprintf(w, "<td align=\"center\" bgcolor= #32DF00 border= \"1\"> %d </td>\n", i%7) /* green */
-        } else {
-            fmt.Fprintf(w, "<td align=\"center\" bgcolor= #FFFF00 border= \"1\"> %d </td>\n", i%7) /* yellow */
-        }
-    }
-    fmt.Fprintf(w, "</table\n")
+	var iovero int
+	for i := 0; i < len(v)/49; i++ {
+		fmt.Fprintf(w, "<tr><td width=\"5%%\">%d:</td>\n",i)
+		for j:= 0; j < 7; j++ { // 7 overos at position j 
+			fmt.Fprintf(w, "</tr><tr><td width=\"5%%\">\n")
+			for k:=0; k < 7; k++ { // index through each card on level 
+				iovero = 49*i + 7*k + j
 
+				if(v[iovero] == 0xFF) { // Oh shit this indexing is a hack
+					fmt.Fprintf(w, "<td align=\"center\" bgcolor= #FF0000 border= \"1\"> %d </td>\n", iovero+1) /* red */
+				} else if  v[iovero] != 0x00 {
+					fmt.Fprintf(w, "<td align=\"center\" bgcolor= #32DF00 border= \"1\"> %d </td>\n", iovero+1) /* green */
+				} else {
+					fmt.Fprintf(w, "<td align=\"center\" bgcolor= #FFFF00 border= \"1\"> %d </td>\n", iovero+1) /* yellow */
+				}
+
+			}
+		}
+		fmt.Fprintf(w, "</tr><tr></tr>")
+	}
+		fmt.Fprintf(w, "</table\n")
 }
 
 func Update(b []byte) (f *bytes.Buffer) {
