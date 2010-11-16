@@ -3,12 +3,13 @@ package main
 import (
 	    "flag"
 	    "http"
+		"os"
 		"fmt"
 	    "log"
 		"./cvis"
 )
 
-var addr = flag.String("addr", ":1718", "http service address") // Q=17, R=18
+var addr = flag.String("addr", ":80", "http service address") // Q=17, R=18
 
 func main() {
 	flag.Parse()
@@ -20,17 +21,18 @@ func main() {
 }
 
 func QR(w http.ResponseWriter, req *http.Request) {
-	b := cvis.Update([]byte{
-			0xFF,0x00,0x01,0x02,0x03, 0x04, 0x05,
-			0xFF,0x00,0x01,0x02,0x03, 0x04, 0x05,
-			0xFF,0x00,0x01,0x02,0x03, 0x04, 0x05,
-			0xFF,0x00,0x01,0x02,0x03, 0x04, 0x05,
-			0xFF,0x00,0x01,0x02,0x03, 0x04, 0x05,
-			0xFF,0x00,0x01,0x02,0x03, 0x04, 0x05,
-			})
-	//fmt.Fprintf(w, "HELLO THIS IS A TEST")
-		b.String()
-	fmt.Printf( b.String())
+
+	arr := make([]byte,196)
+	f, err := os.Open("/dev/urandom", os.O_RDONLY, 0)
+	if err != nil {
+		os.Exit(1);
+	}
+
+	_, err = f.Read(arr)
+	if err != nil {
+		os.Exit(1);
+	}
+	b := cvis.Update(arr)
 	fmt.Fprintf(w, b.String())
 }
 

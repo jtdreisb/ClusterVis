@@ -6,7 +6,6 @@ import (
 	"image"
 )
 
-
 type Image struct {
 	x, y int
 	a [][]uint8

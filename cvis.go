@@ -23,21 +23,27 @@ func buildTable(w io.Writer, data interface{}, formatter string) {
 		fmt.Printf("unable to get a byte array!\n")
 		os.Exit(1);
 	}
-    fmt.Fprintf(w, "<table align=\"center\" width=\"100%%\">\n")
+    fmt.Fprintf(w, "<table height=\"100%%\" width=\"100%%\">\n")
     for i := 0; i < len(v); i++ {
         if i%7 == 0 {
-            if i == 0 {
-                fmt.Fprintf(w, "<tr><td width=\"5%%\">%d:</td>\n",i)
+			if i == 0 {
+                fmt.Fprintf(w, "<tr><td width=\"5%%\">0-0:</td>\n")
             } else {
-                fmt.Fprintf(w, "</tr><tr><td width=\"5%\">%d:</td>\n",i)
+				if (i/7)%7 ==0 {
+					fmt.Fprintf(w, "</tr><tr></tr><tr></tr><tr></tr>");
+				} else  {
+					fmt.Fprintf(w, "</tr><tr></tr>");
+				}
+                fmt.Fprintf(w, "<tr><td  width=\"5%%\">%d-%d:</td>\n", (i/49), (i/7)%7)
             }
         }
+		fmt.Fprintf(w, "<td border=\"1\">  </td>")
         if(v[i] == 0xFF) {
-            fmt.Fprintf(w, "<td bgcolor= #FF0000 border= \"1\"> </td>\n") /* red */
+            fmt.Fprintf(w, "<td align=\"center\" bgcolor= #FF0000 border= \"1\"> %d </td>\n", i%7) /* red */
         } else if  v[i] != 0x00 {
-            fmt.Fprintf(w, "<td bgcolor= #32DF00 border= \"1\"> </td>\n") /* green */
+            fmt.Fprintf(w, "<td align=\"center\" bgcolor= #32DF00 border= \"1\"> %d </td>\n", i%7) /* green */
         } else {
-            fmt.Fprintf(w, "<td bgcolor= #FFFF00 border= \"1\"> </td>\n") /* yellow */
+            fmt.Fprintf(w, "<td align=\"center\" bgcolor= #FFFF00 border= \"1\"> %d </td>\n", i%7) /* yellow */
         }
     }
     fmt.Fprintf(w, "</table\n")
@@ -60,7 +66,7 @@ func Update(b []byte) (f *bytes.Buffer) {
 
 const templatestr = `
 <html>
-<head> <meta http-equiv="refresh" content="1"> </head>
+<head> <meta http-equiv="refresh" content="0.1"> </head>
 {v|build}
 </html>
 `
